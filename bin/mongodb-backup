@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+
+const backup = require ('mongodb-backup');
+const async = require ('async');
+const path = require ('path');
+const _ = require ('lodash');
+const moment = require ('moment');
+const fs = require ('fs');
+const zlib = require ('zlib');
+
+const BACKUP_FILE = path.join (process.env.HOME, '.mongodb-backup.js');
+const CONFIG = require (BACKUP_FILE);
+const root = '/backup';
+
+async.waterfall ([
+  (callback) => {
+    async.eachOf (CONFIG.databases, (config, name, callback) => {
+      let date = moment ().format ('YYYYMMDD_HHmmss');
+      let tar = `${name}-${date}.tar`;
+
+      async.waterfall ([
+        (callback) => {
+          let opts = _.merge ({root, callback, tar, metadata: true}, config);
+
+          backup (opts);
+        },
+
+        (callback) => {
+          const tarPath = path.join (root, tar);
+          const gzPath = `${tarPath}.gz`;
+
+          const gzip = zlib.createGzip ();
+          const inp = fs.createReadStream (tarPath);
+          const out = fs.createWriteStream (gzPath);
+
+          inp.pipe (gzip).pipe (out);
+
+          fs.unlink (tarPath, callback);
+        }
+      ], callback);
+    }, callback);
+  }
+], complete);
+
+function complete (err) {
+  if (err)
+    console.error (err.message);
+}

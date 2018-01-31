@@ -1,0 +1,21 @@
+{
+  "name": "mongodb-backup",
+  "version": "0.1.0",
+  "description": "Simple utility to backup MongoDB ",
+  "main": "index.js",
+  "repository": "https://github.com/onehilltech/mongodb-backup",
+  "author": "One Hill Technologies, LLC",
+  "license": "Apache-2.0",
+  "bin": {
+    "mongodb-backup": "./bin/mongodb-backup"
+  },
+  "private": false,
+  "dependencies": {
+    "async": "^2.6.0",
+    "jsonfile": "^4.0.0",
+    "lodash": "^4.17.4",
+    "moment": "^2.20.1",
+    "mongodb-backup": "^1.6.9",
+    "path": "^0.12.7"
+  }
+}
