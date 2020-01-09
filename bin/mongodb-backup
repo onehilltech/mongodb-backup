@@ -35,7 +35,9 @@ async.waterfall ([
 
           inp.pipe (gzip).pipe (out);
 
-          fs.unlink (tarPath, callback);
+          return callback (null);
+
+          //fs.unlink (tarPath, callback);
         }
       ], callback);
     }, callback);
